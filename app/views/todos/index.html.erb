@@ -6,8 +6,7 @@
 
 <%= form_with url: todos_path, method: :get do |form| %>
   <%= form.label :category, "Filter by category" %>
-  <%= form.select :category,
-        options_for_select([ [ "All", "" ] ] + Todo::CATEGORIES.map { |category| [ category, category ] }, @category) %>
+  <%= form.select :category, category_filter_options(@category) %>
   <%= form.submit "Filter" %>
 <% end %>
 
