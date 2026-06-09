@@ -49,6 +49,10 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # Behavior-driven and test-driven development tooling
+  gem "rspec-rails"
+  gem "cucumber-rails", require: false
 end
 
 group :development do
@@ -60,4 +64,10 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Database cleaning between Cucumber scenarios
+  gem "database_cleaner-active_record"
+
+  # Test coverage reporting
+  gem "simplecov", require: false
 end

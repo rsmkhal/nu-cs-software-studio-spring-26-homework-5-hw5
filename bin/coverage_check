@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# Fails (exit 1) when the merged SimpleCov line coverage is below the threshold.
+# Reads the combined RSpec + Cucumber result that SimpleCov writes to
+# coverage/.last_run.json after the test suites run.
+require "json"
+
+threshold = Integer(ENV.fetch("COVERAGE_THRESHOLD", "80"))
+last_run = File.expand_path("../coverage/.last_run.json", __dir__)
+
+unless File.exist?(last_run)
+  warn "No coverage results found at #{last_run}. Run RSpec and Cucumber first."
+  exit 1
+end
+
+line_coverage = JSON.parse(File.read(last_run)).dig("result", "line")
+
+if line_coverage.nil?
+  warn "Could not read line coverage from #{last_run}."
+  exit 1
+end
+
+puts format("Line coverage: %.2f%% (minimum required: %d%%)", line_coverage, threshold)
+
+if line_coverage < threshold
+  warn "FAIL: coverage is below the required #{threshold}% threshold."
+  exit 1
+end
+
+puts "PASS: coverage meets the required threshold."

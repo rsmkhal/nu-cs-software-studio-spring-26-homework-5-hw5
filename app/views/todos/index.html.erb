@@ -4,12 +4,22 @@
 
 <h1>Todos</h1>
 
+<%= form_with url: todos_path, method: :get do |form| %>
+  <%= form.label :category, "Filter by category" %>
+  <%= form.select :category, category_filter_options(@category) %>
+  <%= form.submit "Filter" %>
+<% end %>
+
 <div id="todos">
-  <% @todos.each do |todo| %>
-    <%= render todo %>
-    <p>
-      <%= link_to "Show this todo", todo %>
-    </p>
+  <% if @todos.any? %>
+    <% @todos.each do |todo| %>
+      <%= render todo %>
+      <p>
+        <%= link_to "Show this todo", todo %>
+      </p>
+    <% end %>
+  <% else %>
+    <p>No todos found</p>
   <% end %>
 </div>
 
