@@ -1,0 +1,50 @@
+name: Coverage
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Prepare database
+        env:
+          RAILS_ENV: test
+        run: bin/rails db:prepare
+
+      - name: Run RSpec
+        env:
+          RAILS_ENV: test
+        run: bundle exec rspec
+
+      - name: Run Cucumber
+        env:
+          RAILS_ENV: test
+        run: bundle exec cucumber
+
+      - name: Enforce coverage threshold (>= 80%)
+        env:
+          COVERAGE_THRESHOLD: "80"
+        run: bin/coverage_check
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: coverage
+          path: coverage
+          if-no-files-found: ignore
